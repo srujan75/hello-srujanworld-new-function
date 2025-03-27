@@ -1,0 +1,41 @@
+name: Deploy Python project to Azure Function App
+
+on:
+  push:
+    branches: ["main"]  # Change to "master" only if your branch is named master
+
+env:
+  AZURE_FUNCTIONAPP_NAME: 'srujantestfuction'   # Your Azure Function App name
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'          # Root directory (adjust if needed)
+  PYTHON_VERSION: '3.9'                         # Set Python version (ensure it's supported)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install Dependencies
+      run: |
+        if [ -f "requirements.txt" ]; then
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
+        else
+          echo "Warning: requirements.txt not found!"
+        fi
+
+    - name: Deploy to Azure Function App
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}  # Ensure this secret is set
+        scm-do-build-during-deployment: true
+        enable-oryx-build: true

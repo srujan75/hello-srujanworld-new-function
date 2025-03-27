@@ -83,4 +83,4 @@ jobs:
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }} # Remove publish-profile to use Azure RBAC
         scm-do-build-during-deployment: true
         enable-oryx-build: true
-Update azure-functions-app-python.yml · srujan75/hello-srujanworld-new-function@bcd0c36 
+Update azure-functions-app-python.yml · srujan75/hello-srujanworld-new@bcd0c36 
